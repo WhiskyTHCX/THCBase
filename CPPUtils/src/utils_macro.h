@@ -24,7 +24,7 @@
 
 //! custom loop macro
 #define UTILS_LOOP3(NAME,I,SI,EI,J,SJ,EJ,K,SK,EK)                              \
-    _Pragma("omp for")                                                         \
+    _Pragma("omp for collapse(3)")                                             \
     for(int I = SI; I < EI; ++I)                                               \
     for(int J = SJ; J < EJ; ++J)                                               \
     for(int K = SK; K < EK; ++K)
