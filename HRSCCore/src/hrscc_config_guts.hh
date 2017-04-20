@@ -59,7 +59,7 @@ if(config::param::method_i == config::method::FV) {
             break;
 
 #ifdef HRSCC_FV_ENABLE_ONLY
-        HRSCC_CONFFIG_GUTS_FV_CASE(z, HRSCC_FV_ENABLE_ONLY, z);
+        HRSCC_CONFIG_GUTS_FV_CASE(z, HRSCC_FV_ENABLE_ONLY, z);
 #else
         BOOST_PP_REPEAT_FROM_TO(0, HRSCC_CONFIG_NUMBER_FV_METHODS,
                 HRSCC_CONFIG_GUTS_FV_CASE, ~);
