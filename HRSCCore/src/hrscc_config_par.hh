@@ -48,13 +48,15 @@ struct refluxing {
 };
 
 struct reconstruction {
-    static int const LimO3  = 0;
-    static int const MinMod = 1;
-    static int const MP5    = 2;
-    static int const WENO3  = 3;
-    static int const WENO5  = 4;
-    static int const WENO7  = 5;
-    static int const siz    = 6;
+    static int const LimO3    = 0;
+    static int const MinMod   = 1;
+    static int const MP5      = 2;
+    static int const SuperBee = 3;
+    static int const VanLeer  = 4;
+    static int const WENO3    = 5;
+    static int const WENO5    = 6;
+    static int const WENO7    = 7;
+    static int const siz      = 8;
 };
 
 struct riemann_solver {
@@ -91,6 +93,7 @@ struct param {
     static bool      cartesian;
     static CCTK_REAL speed_eps;
     static CCTK_REAL pplim_alpha;
+    static CCTK_REAL minmod_theta;
     static CCTK_REAL limo3_eps;
     static CCTK_REAL limo3_r;
     static CCTK_REAL mp5_alpha;

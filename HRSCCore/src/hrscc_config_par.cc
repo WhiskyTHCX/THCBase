@@ -35,6 +35,7 @@ int config::param::system_split_i;
 CCTK_REAL config::param::maxspeed;
 bool      config::param::cartesian;
 CCTK_REAL config::param::speed_eps;
+CCTK_REAL config::param::minmod_theta;
 CCTK_REAL config::param::pplim_alpha;
 CCTK_REAL config::param::limo3_eps;
 CCTK_REAL config::param::limo3_r;
@@ -82,6 +83,12 @@ void param_store(cGH const * cctkGH) {
     }
     else if(CCTK_Equals(reconstruction, "MP5")) {
         config::param::reconstruction_i = config::reconstruction::MP5;
+    }
+    else if(CCTK_Equals(reconstruction, "SuperBee")) {
+        config::param::reconstruction_i = config::reconstruction::SuperBee;
+    }
+    else if(CCTK_Equals(reconstruction, "VanLeer")) {
+        config::param::reconstruction_i = config::reconstruction::VanLeer;
     }
     else if(CCTK_Equals(reconstruction, "WENO3")) {
         config::param::reconstruction_i = config::reconstruction::WENO3;
@@ -132,15 +139,16 @@ void param_store(cGH const * cctkGH) {
         CCTK_ERROR("");
     }
 
-    config::param::maxspeed    = maxspeed;
-    config::param::cartesian   = cartesian;
-    config::param::speed_eps   = speed_eps;
-    config::param::pplim_alpha = pplim_alpha;
-    config::param::limo3_eps   = limo3_eps;
-    config::param::limo3_r     = limo3_r;
-    config::param::mp5_alpha   = mp5_alpha;
-    config::param::weno_alpha  = weno_alpha;
-    config::param::weno_eps    = weno_eps;
+    config::param::maxspeed     = maxspeed;
+    config::param::cartesian    = cartesian;
+    config::param::speed_eps    = speed_eps;
+    config::param::pplim_alpha  = pplim_alpha;
+    config::param::minmod_theta = minmod_theta;
+    config::param::limo3_eps    = limo3_eps;
+    config::param::limo3_r      = limo3_r;
+    config::param::mp5_alpha    = mp5_alpha;
+    config::param::weno_alpha   = weno_alpha;
+    config::param::weno_eps     = weno_eps;
 
     msg << "Method ID = " << config::get_metid() << ".";
     std::string msg_str = msg.str();

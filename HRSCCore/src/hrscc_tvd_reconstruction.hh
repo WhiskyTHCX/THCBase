@@ -75,6 +75,10 @@ class TVDReconstruction {
 
 //! Alias for the classical minmod-based reconstruction
 typedef TVDReconstruction<limiters::minmod> MinModReconstruction;
+//! Alias for the TVD reconstruction with Van Leer's limiter
+typedef TVDReconstruction<limiters::vanleer> VanLeerReconstruction;
+//! Alias for the TVD reconstruction SuperBee limiter
+typedef TVDReconstruction<limiters::superbee> SuperBeeReconstruction;
 
 } // namespace
 

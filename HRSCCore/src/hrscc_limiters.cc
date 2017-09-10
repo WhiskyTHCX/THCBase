@@ -18,17 +18,16 @@
 #include <algorithm>
 #include <cmath>
 
+#include <hrscc_config_par.hh>
 #include <hrscc_limiters.hh>
+#include <hrscc_typedefs.hh>
 
 namespace hrscc {
 namespace limiters {
 
-CCTK_REAL mc::eval(CCTK_REAL r) {
-    return std::max(0.0, std::min(2*r, std::min(0.5*(1+r), 2.0)));
-}
-
 CCTK_REAL minmod::eval(CCTK_REAL r) {
-    return std::max(0.0, std::min(1.0, r));
+    CCTK_REAL const th = hrscc::config::param::minmod_theta;
+    return std::max(0.0, std::min(th*r, std::min(0.5*(1.+r), th)));
 }
 
 CCTK_REAL superbee::eval(CCTK_REAL r) {

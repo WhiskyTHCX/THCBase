@@ -57,16 +57,26 @@ struct select_reconstruction<2> {
 
 template<>
 struct select_reconstruction<3> {
-    typedef WENO3Reconstruction method;
+    typedef SuperBeeReconstruction method;
 };
 
 template<>
 struct select_reconstruction<4> {
-    typedef WENO5Reconstruction method;
+    typedef VanLeerReconstruction method;
 };
 
 template<>
 struct select_reconstruction<5> {
+    typedef WENO3Reconstruction method;
+};
+
+template<>
+struct select_reconstruction<6> {
+    typedef WENO5Reconstruction method;
+};
+
+template<>
+struct select_reconstruction<7> {
     typedef WENO7Reconstruction method;
 };
 
@@ -132,7 +142,7 @@ struct select_riemann_solver<claw_t, 2> {
 ///////////////////////////////////////////////////////////////////////////////
 // select_fd
 ///////////////////////////////////////////////////////////////////////////////
-#define HRSCC_CONFIG_NUMBER_FD_METHODS    72
+#define HRSCC_CONFIG_NUMBER_FD_METHODS    96
 
 template<typename claw_t, int metid>
 struct select_fd {
@@ -165,7 +175,7 @@ int get_fd_metid();
 ///////////////////////////////////////////////////////////////////////////////
 // select_fv
 ///////////////////////////////////////////////////////////////////////////////
-#define HRSCC_CONFIG_NUMBER_FV_METHODS    72
+#define HRSCC_CONFIG_NUMBER_FV_METHODS    96
 
 template<typename claw_t, int metid>
 struct select_fv {

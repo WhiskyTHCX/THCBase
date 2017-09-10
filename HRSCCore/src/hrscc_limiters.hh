@@ -24,14 +24,6 @@ namespace hrscc {
 //! Limiters used for the TVD reconstruction
 namespace limiters {
 
-//! MC limiter
-class mc {
-    public:
-        static CCTK_REAL eval(
-                CCTK_REAL r             //!< [in] slope ratios
-                );
-};
-
 //! MinMod limiter
 class minmod {
     public:

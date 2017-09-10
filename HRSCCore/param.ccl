@@ -32,6 +32,8 @@ KEYWORD reconstruction "Reconstruction method to use"
     "LimO3"     :: "LimO3 3rd order reconstruction"
     "MinMod"    :: "MinMod TVD reconstruction"
     "MP5"       :: "Monotonicity Preserving 5th order reconstruction"
+    "SuperBee"  :: "SuperBee TVD reconstruction"
+    "VanLeer"   :: "Van Leer TVD reconstruction"
     "WENO3"     :: "3rd order Weighted Essentially Non Oscillatory"
     "WENO5"     :: "5th order Weighted Essentially Non Oscillatory"
     "WENO7"     :: "7th order Weighted Essentially Non Oscillatory"
@@ -85,6 +87,11 @@ REAL pplim_alpha "alpha parameter to use for the positivity-preserving limiter"
 {
     (0:* :: "Any positive number"
 } 3.0
+
+REAL minmod_theta "theta parameter for the MinMod reconstruction"
+{
+    1:2 :: "Any value in [1,2]"
+} 1.0
 
 CCTK_REAL limo3_eps "eps parameter for the LimO3 reconstruction"
 {
