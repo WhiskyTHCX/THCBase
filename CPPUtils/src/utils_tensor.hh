@@ -95,6 +95,15 @@ class generic<T, ndim_, 1> {
         inline T const & operator()(int const a) const {
             return this->operator[](a);
         }
+
+        //! Access the components of a tensor using the natural indices
+        inline T & at(int const a) {
+            return this->operator[](a);
+        }
+        //! Access the components of a tensor using the natural indices
+        inline T const & at(int const a) const {
+            return this->operator[](a);
+        }
     private:
         T m_data[ndim];
 };
@@ -148,6 +157,15 @@ class generic<T, ndim_, 2> {
         inline T const & operator()(int const a, int const b) const {
             return this->operator[](multiindex(a,b));
         }
+
+        //! Access the components of a tensor using the natural indices
+        inline T & at(int const a, int const b) {
+            return this->operator[](multiindex(a,b));
+        }
+        //! Access the components of a tensor using the natural indices
+        inline T const & at(int const a, int const b) const {
+            return this->operator[](multiindex(a,b));
+        }
     private:
         T m_data[ndof];
 };
@@ -199,6 +217,16 @@ class generic<T, ndim_, 3> {
         }
         //! Access the components of a tensor using the natural indices
         inline T const & operator()(int const a, int const b,
+                int const c) const {
+            return this->operator[](multiindex(a,b,c));
+        }
+
+        //! Access the components of a tensor using the natural indices
+        inline T & at(int const a, int const b, int const c) {
+            return this->operator[](multiindex(a,b,c));
+        }
+        //! Access the components of a tensor using the natural indices
+        inline T const & at(int const a, int const b,
                 int const c) const {
             return this->operator[](multiindex(a,b,c));
         }
@@ -279,6 +307,15 @@ class symmetric2<T, ndim_, 2> {
         inline T const & operator()(int const a, int const b) const {
             return this->operator[](multiindex(a,b));
         }
+
+        //! Access the components of a tensor using the natural indices
+        inline T & at(int const a, int const b) {
+            return this->operator[](multiindex(a,b));
+        }
+        //! Access the components of a tensor using the natural indices
+        inline T const & at(int const a, int const b) const {
+            return this->operator[](multiindex(a,b));
+        }
     private:
         T m_data[(ndim*(ndim + 1))/2];
 };
@@ -345,9 +382,114 @@ class symmetric2<T, ndim_, 3> {
         inline T const & operator()(int const a, int const b, int const c) const {
             return this->operator[](multiindex(a,b,c));
         }
+
+        //! Access the components of a tensor using the natural indices
+        inline T & at(int const a, int const b, int const c) {
+            return this->operator[](multiindex(a,b,c));
+        }
+        //! Access the components of a tensor using the natural indices
+        inline T const & at(int const a, int const b, int const c) const {
+            return this->operator[](multiindex(a,b,c));
+        }
     private:
         T m_data[ndof];
 };
+
+///////////////////////////////////////////////////////////////////////////////
+//! Commonly used tensor operations
+///////////////////////////////////////////////////////////////////////////////
+template<typename T, int N>
+void contract(
+        symmetric2<T, N, 2> const & mat,
+        generic<T, N, 1> const & va,
+        generic<T, N, 1> * vb) {
+    for (int a = 0; a < N; ++a) {
+        vb->operator[](a) = 0;
+        for (int b = 0; b < N; ++b) {
+            vb->operator[](a) += mat(a,b)*va(b);
+        }
+    }
+}
+
+template<typename T, int N>
+void contract(
+        symmetric2<T, N, 2> const & mat,
+        symmetric2<T, N, 2> const & A,
+        generic<T, N, 2> * B) {
+    for (int a = 0; a < N; ++a)
+    for (int b = 0; b < N; ++b) {
+        B->at(a,b) = 0.0;
+        for (int c = 0; c < N; ++c) {
+            B->at(a,b) += mat(a,c)*A(c,b);
+        }
+    }
+}
+
+template<typename T, int N>
+void contract2(
+        symmetric2<T, N, 2> const & mat,
+        symmetric2<T, N, 2> const & A,
+        symmetric2<T, N, 2> * B) {
+    for (int a = 0; a < N; ++a)
+    for (int b = a; b < N; ++b) {
+        B->at(a,b) = 0.0;
+        for (int c = 0; c < N; ++c)
+        for (int d = 0; d < N; ++d) {
+            B->at(a,b) += mat(a,c) * mat(b,d) * A(c,d);
+        }
+    }
+}
+
+template<typename T, int N>
+T dot(
+        generic<T, N, 1> const & va,
+        generic<T, N, 1> const & vb) {
+    T out(0);
+    for (int a = 0; a < N; ++a) {
+        out += va(a)*vb(a);
+    }
+    return out;
+}
+
+template<typename T, int N>
+T dot(
+        symmetric2<T, N, 2> const & A,
+        symmetric2<T, N, 2> const & B) {
+    T out(0);
+    for (int a = 0; a < N; ++a)
+    for (int b = 0; b < N; ++b) {
+        out += A(a,b) * B(a,b);
+    }
+    return out;
+}
+
+template<typename T, int N>
+T dot(
+        symmetric2<T, N, 2> const & met,
+        generic<T, N, 1> const & va,
+        generic<T, N, 1> const & vb) {
+    T out(0);
+    for (int a = 0; a < N; ++a)
+    for (int b = 0; b < N; ++b) {
+        out += met(a,b)*va(a)*vb(b);
+    }
+    return out;
+}
+
+template<typename T, int N>
+T dot(
+        symmetric2<T, N, 2> const & met,
+        symmetric2<T, N, 2> const & A,
+        symmetric2<T, N, 2> const & B) {
+    T out(0);
+    for (int a = 0; a < N; ++a)
+    for (int b = 0; b < N; ++b)
+    for (int c = 0; c < N; ++c)
+    for (int d = 0; d < N; ++d) {
+        out += met(a,c) * met(b,d) * A(c,d) * B(a,b);
+    }
+    return out;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 //! Metric tensor
@@ -469,7 +611,7 @@ class metric<4>: public symmetric2<CCTK_REAL, 4, 2> {
                     gyy, gyz, gzz, &g[0]);
             for(int a = 0; a < 4; ++a)
             for(int b = a; b < 4; ++b) {
-                this->operator()(a, b) = g[4*a + b];
+                this->at(a, b) = g[4*a + b];
             }
         }
 };
@@ -495,7 +637,7 @@ class inv_metric<4>: public symmetric2<CCTK_REAL, 4, 2> {
                     betaz, gxx, gxy, gxz, gyy, gyz, gzz, &u[0]);
             for(int a = 0; a < 4; ++a)
             for(int b = a; b < 4; ++b) {
-                this->operator()(a, b) = u[4*a + b];
+                this->at(a, b) = u[4*a + b];
             }
         }
 };
@@ -532,7 +674,7 @@ class fluid_velocity_field_const {
         }
 
         //! Evaluate the fluid four velocity at a given location
-        inline void get(ptrdiff_t const ijk, generic<CCTK_REAL,4,1> * u) const {
+        inline void get(ptrdiff_t const ijk, generic<CCTK_REAL, 4, 1> * u) const {
             utils::valencia::uvel(m_data[0][ijk], m_data[1][ijk],
                     m_data[2][ijk], m_data[3][ijk], m_data[4][ijk],
                     m_data[5][ijk], m_data[6][ijk], m_data[7][ijk],
@@ -588,16 +730,41 @@ class slicing_geometry_const {
 #endif
         }
 
-        //! \brief Get the normal vector to the spacelike hyper-surface of the
-        //! ADM decomposition
+        //! Get the normal vector to the spacelike hypersurface
         inline void get_normal(ptrdiff_t const ijk,
                 generic<CCTK_REAL, 4, 1> * n) const {
-            n->operator[](0) = 1.0/m_data[0][ijk];
-            n->operator[](1) = - m_data[1][ijk]/m_data[0][ijk];
-            n->operator[](2) = - m_data[2][ijk]/m_data[0][ijk];
-            n->operator[](3) = - m_data[3][ijk]/m_data[0][ijk];
+            utils::metric::normal(m_data[0][ijk], m_data[1][ijk],
+                    m_data[2][ijk], m_data[3][ijk], &n->operator[](0));
+        }
+        //! Get the normal one-form to the spacelike hypersurface
+        inline void get_normal_form(ptrdiff_t const ijk,
+                generic<CCTK_REAL, 4, 1> * n_d) const {
+            n_d->operator[](0) = -m_data[0][ijk];
+            n_d->operator[](1) = 0.0;
+            n_d->operator[](2) = 0.0;
+            n_d->operator[](3) = 0.0;
         }
 
+        //! Get the shift vector
+        inline void get_shift_vec(ptrdiff_t const ijk,
+                generic<CCTK_REAL, 3, 1> * beta_u) const {
+            beta_u->operator[](0) = m_data[1][ijk];
+            beta_u->operator[](1) = m_data[2][ijk];
+            beta_u->operator[](2) = m_data[3][ijk];
+        }
+        //! Get the shift vector
+        inline void get_shift_vec(ptrdiff_t const ijk,
+                generic<CCTK_REAL, 4, 1> * beta_u) const {
+            beta_u->operator[](1) = 0.0;
+            beta_u->operator[](1) = m_data[1][ijk];
+            beta_u->operator[](2) = m_data[2][ijk];
+            beta_u->operator[](3) = m_data[3][ijk];
+        }
+
+        //! Get a component of the shift vector on the entire grid
+        CCTK_REAL const * get_shift_comp(int const a) const {
+            return m_data[1 + a];
+        }
         //! Get a component of the spatial metric on the entire grid
         CCTK_REAL const * get_space_metric_comp(int const a, int const b) const {
             return m_data[4 + metric<3>::multiindex(a,b)];
@@ -605,7 +772,6 @@ class slicing_geometry_const {
         //! Get a component of the extrinsic curvature on the entire grid
         CCTK_REAL const * get_extr_curv_comp(int const a, int const b) const {
             return m_data[10 + symmetric2<CCTK_REAL,3,2>::multiindex(a,b)];
-
         }
 
         //! Get the spatial metric at a given location
@@ -623,6 +789,21 @@ class slicing_geometry_const {
             u->from_metric(m_data[4][ijk], m_data[5][ijk], m_data[6][ijk],
                     m_data[7][ijk], m_data[8][ijk], m_data[9][ijk],
                     m_data[16][ijk]*m_data[16][ijk]);
+        }
+
+        //! \brief Get the projector onto the spacelike hypersurface:
+        //! \f$ \gamma^a_{\phantom{a}b} \f$
+        inline void get_space_proj(ptrdiff_t const ijk,
+                generic<CCTK_REAL, 4, 2> * gamma_ud) const {
+            generic<CCTK_REAL, 4, 1> n_d;
+            generic<CCTK_REAL, 4, 1> n_u;
+            get_normal(ijk, &n_u);
+            get_normal_form(ijk, &n_d);
+
+            for (int a = 0; a < 4; ++a)
+            for (int b = 0; b < 4; ++b) {
+                gamma_ud->at(a,b) = delta(a,b) + n_u(a)*n_d(b);
+            }
         }
 
         //! Get the spacetime metric at a given location

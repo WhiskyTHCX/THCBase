@@ -17,13 +17,22 @@
 
 #include "utils_metric.hh"
 
-#include "utils_gemv.hh"
-#include "utils_pow.hh"
-
 #define SQ(X) ((X)*(X))
 
 namespace utils {
 namespace metric {
+
+void normal(
+        CCTK_REAL const alp,
+        CCTK_REAL const betax,
+        CCTK_REAL const betay,
+        CCTK_REAL const betaz,
+        CCTK_REAL n[4]) {
+    n[0] = 1.0/alp;
+    n[1] = -betax/alp;
+    n[2] = -betay/alp;
+    n[3] = -betaz/alp;
+}
 
 void space(
         CCTK_REAL const gxx,
@@ -115,11 +124,13 @@ void spacetime(
     g[15] = gzz;
 
     CCTK_REAL betaup[3] = {betax, betay, betaz};
-    CCTK_REAL betadw[3] = {0, 0, 0};
-    gemv<CCTK_REAL, false, 3, 3>::eval(1.0, &g[5], 4, &betaup[0],
-            1, 0.0, &betadw[0], 1);
+    CCTK_REAL betadw[3] = {
+        gxx*betax + gxy*betay + gxz*betaz,
+        gxy*betax + gyy*betay + gyz*betaz,
+        gxz*betax + gyz*betay + gzz*betaz,
+    };
 
-    g[0] = - pow<2>(alp) + betadw[0]*betaup[0] + betadw[1]*betaup[1] +
+    g[0] = - SQ(alp) + betadw[0]*betaup[0] + betadw[1]*betaup[1] +
             betadw[2]*betaup[2];
 
     g[1] = betadw[0];
@@ -143,7 +154,7 @@ void spacetime_upper(
         CCTK_REAL const gyz,
         CCTK_REAL const gzz,
         CCTK_REAL u[16]) {
-    u[0] = - 1.0/pow<2>(alp);
+    u[0] = - 1.0/SQ(alp);
 
     CCTK_REAL const det = spatial_det(gxx, gxy, gxz, gyy, gyz, gzz);
 

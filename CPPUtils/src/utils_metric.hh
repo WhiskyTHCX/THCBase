@@ -27,6 +27,14 @@ namespace utils {
  */
 namespace metric {
 
+//! Get normal to space hypersurface
+void normal(
+        CCTK_REAL const alp,
+        CCTK_REAL const betax,
+        CCTK_REAL const betay,
+        CCTK_REAL const betaz,
+        CCTK_REAL n[4]);
+
 //! Construct a spatial metric
 void space(
         CCTK_REAL const gxx,
