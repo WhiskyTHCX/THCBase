@@ -680,6 +680,12 @@ class fluid_velocity_field_const {
                     m_data[5][ijk], m_data[6][ijk], m_data[7][ijk],
                     &u->operator[](0));
         }
+        //! Evaluate the three velocity at a given location
+        inline void get(ptrdiff_t const ijk, generic<CCTK_REAL, 3, 1> * v) const {
+            v->operator[](0) = m_data[5][ijk];
+            v->operator[](1) = m_data[6][ijk];
+            v->operator[](2) = m_data[7][ijk];
+        }
     private:
         CCTK_REAL const * m_data[8];
 };
