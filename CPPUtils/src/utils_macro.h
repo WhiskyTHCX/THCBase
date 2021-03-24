@@ -22,15 +22,25 @@
 
 #include <cctk_Loop.h>
 
-//! custom loop macro
+//! custom start loop macro
 #define UTILS_LOOP3(NAME,I,SI,EI,J,SJ,EJ,K,SK,EK)                              \
     _Pragma("omp for collapse(3)")                                             \
     for(int I = SI; I < EI; ++I)                                               \
     for(int J = SJ; J < EJ; ++J)                                               \
     for(int K = SK; K < EK; ++K)
 
-//! custom loop macro
+//! custom end loop macro
 #define UTILS_ENDLOOP3(NAME)
+
+//! custom start loop macro with dynamic scheduling
+#define UTILS_LOOP3_DYN(NAME,I,SI,EI,J,SJ,EJ,K,SK,EK)                          \
+    _Pragma("omp for collapse(3) schedule(dynamic)")                           \
+    for(int I = SI; I < EI; ++I)                                               \
+    for(int J = SJ; J < EJ; ++J)                                               \
+    for(int K = SK; K < EK; ++K)
+
+//! custom end loop macro with dynamic scheduling
+#define UTILS_ENDLOOP3_DYN(NAME)
 
 //! layout memory size
 #define UTILS_GFSIZE(CGH)                                                      \
