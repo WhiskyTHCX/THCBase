@@ -16,6 +16,7 @@
 
 
 #include <cctk.h>
+#include <cctk_Arguments.h>
 
 #include <hrscc_gridinfo.hh>
 
